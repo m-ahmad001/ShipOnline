@@ -10,13 +10,13 @@ class UserController
         $this->userModel = new User();
     }
 
-    public function register($username, $email, $password, $mobileNumber)
+    public function register($name, $email, $password, $mobileNumber)
     {
-        return $this->userModel->register($username, $email, $password, $mobileNumber);
+        return $this->userModel->register($name, $email, $password, $mobileNumber);
     }
 
-    public function login($username, $password)
+    public function login($mobileNumber, $password)
     {
-        return $this->userModel->login($username, $password);
+        return $this->userModel->login($mobileNumber, $password);
     }
 }

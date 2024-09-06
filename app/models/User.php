@@ -11,18 +11,18 @@ class User
         $this->conn = $conn;
     }
 
-    public function register($username, $email, $password, $mobileNumber)
+    public function register($name, $email, $password, $mobileNumber)
     {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $this->conn->prepare("INSERT INTO users (username, email, password, mobileNumber) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("sssi", $username, $email, $hashed_password, $mobileNumber);
+        $stmt = $this->conn->prepare("INSERT INTO users (name, email, password, mobileNumber) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("sssi", $name, $email, $hashed_password, $mobileNumber);
         return $stmt->execute();
     }
 
-    public function login($username, $password)
+    public function login($mobileNumber, $password)
     {
-        $stmt = $this->conn->prepare("SELECT id, username, password FROM users WHERE username = ?");
-        $stmt->bind_param("s", $username);
+        $stmt = $this->conn->prepare("SELECT id, mobileNumber, password FROM users WHERE mobileNumber = ?");
+        $stmt->bind_param("s", $mobileNumber);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result->num_rows === 1) {

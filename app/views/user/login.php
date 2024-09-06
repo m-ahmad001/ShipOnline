@@ -74,7 +74,7 @@
             <p class="error"><?php echo htmlspecialchars($error); ?></p>
         <?php endif; ?>
         <form method="post">
-            <input type="text" name="username" placeholder="Username" required>
+            <input type="text" name="mobileNumber" placeholder="Mobile Number" required>
             <input type="password" name="password" placeholder="Password" required>
             <input type="submit" value="Login">
         </form>

@@ -65,10 +65,11 @@
     <div class="form-container">
         <h1>Register</h1>
         <form method="post">
-            <input type="text" name="username" placeholder="Username" required><br>
-            <input type="email" name="email" placeholder="Email" required><br>
-            <input type="text" name="mobileNumber" placeholder="Mobile Number" required><br>
+            <input type="text" name="name" placeholder="Name" required><br>
             <input type="password" name="password" placeholder="Password" required><br>
+            <input type="password" name="confirmPassword" placeholder="Confirm Password" required><br>
+            <input type="email" name="email" placeholder="Email" required><br>
+            <input type="text" name="mobileNumber" placeholder="Contact Phone" required><br>
             <input type="submit" value="Register">
         </form>
     </div>

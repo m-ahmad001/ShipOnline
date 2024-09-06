@@ -32,10 +32,10 @@ switch ($path) {
         if ($request_method === 'GET') {
             require __DIR__ . '/app/views/user/register.php';
         } elseif ($request_method === 'POST') {
-            $result = $userController->register($_POST['username'], $_POST['email'], $_POST['password'], $_POST['mobileNumber']);
+            $result = $userController->register($_POST['name'], $_POST['email'], $_POST['password'], $_POST['mobileNumber']);
             if ($result) {
                 $_SESSION['user_id'] = $result;
-                $_SESSION['username'] = $_POST['username'];
+                $_SESSION['name'] = $_POST['name'];
                 header('Location: /shiponline/shipment/create');
                 echo "Registration successful";
             } else {
@@ -48,7 +48,7 @@ switch ($path) {
         if ($request_method === 'GET') {
             require __DIR__ . '/app/views/user/login.php';
         } elseif ($request_method === 'POST') {
-            $user = $userController->login($_POST['username'], $_POST['password']);
+            $user = $userController->login($_POST['mobileNumber'], $_POST['password']);
             if ($user) {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];

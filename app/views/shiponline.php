@@ -73,9 +73,9 @@
         <h1>Welcome to ShipOnline</h1>
         <nav>
             <ul>
-                <li><a href="login">Login</a></li>
-                <li><a href="register">Register</a></li>
-                <li><a href="admin">Admin</a></li>
+                <li><a href="login"><span style="color: #2c3e50;">Existing User : </span>Login</a></li>
+                <li><a href="register"><span style="color: #2c3e50;">New User : </span>Register</a></li>
+                <li><a href="admin"><span style="color: #2c3e50;">Adminastration : </span>Admin</a></li>
             </ul>
         </nav>
         <footer>

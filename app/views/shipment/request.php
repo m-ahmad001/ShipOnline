@@ -98,9 +98,10 @@
         <h2>Pick-up Information</h2>
         <input type="text" name="pickup_address" placeholder="Pick-up Address" required>
         <input type="text" name="pickup_suburb" placeholder="Pick-up Suburb" required>
-        <input type="date" name="pickup_date" required>
-        <input type="time" name="pickup_time" required>
-
+        <!-- <input type="date" name="pickup_date" required>
+        <input type="time" name="pickup_time" required> -->
+        <input type="date" name="pickup_date" required min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>">
+        <input type="time" name="pickup_time" required min="08:00" max="20:00">
         <h2>Delivery Information</h2>
         <input type="text" name="receiver_name" placeholder="Receiver Name" required>
         <input type="text" name="delivery_address" placeholder="Delivery Address" required>
