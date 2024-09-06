@@ -35,6 +35,7 @@ switch ($path) {
             $result = $userController->register($_POST['username'], $_POST['email'], $_POST['password'], $_POST['mobileNumber']);
             if ($result) {
                 $_SESSION['user_id'] = $result;
+                $_SESSION['username'] = $_POST['username'];
                 header('Location: /shiponline/shipment/create');
                 echo "Registration successful";
             } else {
@@ -51,6 +52,7 @@ switch ($path) {
             if ($user) {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
+                header('Location: /shiponline/shipment/create');
                 echo "Login successful";
             } else {
                 echo "Login failed";
