@@ -7,7 +7,6 @@ require_once __DIR__ . '/app/controllers/ShipmentController.php';
 $userController = new UserController();
 $shipmentController = new ShipmentController();
 
-
 $request_uri = $_SERVER['REQUEST_URI'];
 $request_method = $_SERVER['REQUEST_METHOD'];
 
@@ -22,96 +21,21 @@ if (empty($path)) {
     $path = 'shiponline';
 }
 
-// Add CSS styles
-echo '
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        line-height: 1.6;
-        margin: 0;
-        padding: 0;
-        background-color: #f4f4f4;
-    }
-    .container {
-        width: 80%;
-        margin: auto;
-        overflow: hidden;
-        padding: 20px;
-    }
-    header {
-        background: #35424a;
-        color: #ffffff;
-        padding-top: 30px;
-        min-height: 70px;
-        border-bottom: #e8491d 3px solid;
-    }
-    header a {
-        color: #ffffff;
-        text-decoration: none;
-        text-transform: uppercase;
-        font-size: 16px;
-    }
-    header ul {
-        padding: 0;
-        list-style: none;
-    }
-    header li {
-        display: inline;
-        padding: 0 20px 0 20px;
-    }
-    header #branding {
-        float: left;
-    }
-    header #branding h1 {
-        margin: 0;
-    }
-    header nav {
-        float: right;
-        margin-top: 10px;
-    }
-    .highlight, header .current a {
-        color: #e8491d;
-        font-weight: bold;
-    }
-</style>
-';
+
 
 switch ($path) {
     case 'shiponline':
-        // Home page
-        echo '
-        <header>
-            <div class="container">
-                <div id="branding">
-                    <h1><span class="highlight">Ship</span>Online</h1>
-                </div>
-                <nav>
-                    <ul>
-                        <li class="current"><a href="/shiponline">Home</a></li>
-                        <li><a href="/shiponline/login">Login</a></li>
-                        <li><a href="/shiponline/register">Register</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </header>
-        <div class="container">
-            <h2>Welcome to ShipOnline</h2>
-            <p>Choose a component:</p>
-            <ul>
-                <li><a href="/shipment/create">Shipment Management</a></li>
-                <li><a href="/customer/profile">Customer Management</a></li>
-                <li><a href="/orders">Order Processing</a></li>
-            </ul>
-        </div>
-        ';
+        require __DIR__ . '/app/views/shiponline.php';
         break;
 
     case 'shiponline/register':
         if ($request_method === 'GET') {
             require __DIR__ . '/app/views/user/register.php';
         } elseif ($request_method === 'POST') {
-            $result = $userController->register($_POST['username'], $_POST['email'], $_POST['password']);
+            $result = $userController->register($_POST['username'], $_POST['email'], $_POST['password'], $_POST['mobileNumber']);
             if ($result) {
+                $_SESSION['user_id'] = $result;
+                header('Location: /shiponline/shipment/create');
                 echo "Registration successful";
             } else {
                 echo "Registration failed";
@@ -137,90 +61,45 @@ switch ($path) {
     case 'shiponline/shipment/create':
         if (!isset($_SESSION['user_id'])) {
             header('Location: /shiponline/');
-            exit;
+            exit();
         }
         if ($request_method === 'GET') {
-            require __DIR__ . '/app/views/shipment/create.php';
+            require __DIR__ . '/app/views/shipment/request.php';
         } elseif ($request_method === 'POST') {
-            $result = $shipmentController->createShipment(
-              $_SESSION['user_id'],
-              $_POST['item_description'],
-              $_POST['weight'],
-              $_POST['origin'],
-              $_POST['destination'],
-              $_POST['weight'],
-              $_POST['pickup_address'],
-              $_POST['pickup_suburb'],
-              $_POST['pickup_date'],
-              $_POST['pickup_time'],
-              $_POST['receiver_name'],
-              $_POST['delivery_address'],
-              $_POST['delivery_suburb'],
-              $_POST['delivery_state'],
-
+            $result = $shipmentController->createShipmentRequest(
+                $_SESSION['user_id'],
+                $_POST['item_description'],
+                $_POST['weight'],
+                $_POST['pickup_address'],
+                $_POST['pickup_suburb'],
+                $_POST['pickup_date'],
+                $_POST['pickup_time'],
+                $_POST['receiver_name'],
+                $_POST['delivery_address'],
+                $_POST['delivery_suburb'],
+                $_POST['delivery_state']
             );
-            if ($result) {
-                $success_message = "Shipment created successfully";
-                require __DIR__ . '/app/views/shipment/create.php';
+            if ($result['success']) {
+                $success_message = $result['message'];
             } else {
-                $error_message = "Failed to create shipment";
-                require __DIR__ . '/app/views/shipment/create.php';
+                $error_message = $result['message'];
             }
+            require __DIR__ . '/app/views/shipment/request.php';
         }
         break;
 
-   
+    case 'shiponline/admin':
         if (!isset($_SESSION['user_id'])) {
-            header('Location: shiponline/login');
-            exit;
+            header('Location: /shiponline/');
+            exit();
         }
-        $customer = $customerController->getCustomerProfile($_SESSION['user_id']);
-        require __DIR__ . '/app/views/customer/profile.php';
-        break;
+        if ($request_method === 'GET') {
+            require __DIR__ . '/app/views/admin/admin.php';
+        } elseif ($request_method === 'POST') {
+            $shipments = $shipmentController->getShipmentsByDate($_POST['date'], $_POST['date_type']);
 
-   
-        $products = $productController->getAllProducts();
-        // Render products view
-        break;
-
-   
-        if (!isset($_SESSION['user_id'])) {
-            header('Location: shiponline/login');
-            exit;
+            require __DIR__ . '/app/views/admin/admin.php';
         }
-        if ($request_method === 'POST') {
-            // Process order creation
-            $customer = $customerController->getCustomerProfile($_SESSION['user_id']);
-            $order_id = $orderController->createOrder($customer['customer_id'], $_POST['total_amount'], $_POST['items']);
-            if ($order_id) {
-                $invoiceController->createInvoice($order_id, $_POST['due_date'], $_POST['total_amount']);
-                echo "Order created successfully";
-            } else {
-                echo "Failed to create order";
-            }
-        } else {
-            // Render order creation form
-        }
-        break;
-
-    case 'shiponline/admin/allorders':
-        if (!isset($_SESSION['user_id'])) {
-            header('Location: shiponline/login');
-            exit;
-        }
-        $customer = $customerController->getCustomerProfile($_SESSION['user_id']);
-        $orders = $orderController->getCustomerOrders($customer['customer_id']);
-        // Render orders view
-        break;
-
-   
-        if (!isset($_SESSION['user_id'])) {
-            header('Location: shiponline/login');
-            exit;
-        }
-        $customer = $customerController->getCustomerProfile($_SESSION['user_id']);
-        $invoices = $invoiceController->getCustomerInvoices($customer['customer_id']);
-        // Render invoices view
         break;
 
     default:
