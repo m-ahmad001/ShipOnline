@@ -120,6 +120,7 @@
 </head>
 
 <body>
+
     <div class="container">
         <h1>Administration - View Requests</h1>
         <form method="post">
