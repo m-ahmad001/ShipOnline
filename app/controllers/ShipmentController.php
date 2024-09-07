@@ -50,13 +50,14 @@ class ShipmentController
 
                 if ($result) {
 
-                    $this->sendConfirmationEmail($customerInfo, $request_number, $cost, $_POST['pickup_date'], $_POST['pickup_time']);
+                    $email_result = $this->sendConfirmationEmail($customerInfo, $request_number, $cost, $_POST['pickup_date'], $_POST['pickup_time']);
+
 
                     $success_message = "Thank you! Your request number is {$request_number}. We will pick-up the item at {$_POST['pickup_time']} on {$_POST['pickup_date']}.";
                     return [
                         'success' => true,
                         'message' => $success_message
-                    ]; // Replace with actual success condition
+                    ];
                 } else {
                     $error_message = "An error occurred while processing your request. Please try again.";
                     return [
@@ -75,9 +76,16 @@ class ShipmentController
         $to = $customerInfo['email'];
         $subject = "Shipping request with ShipOnline";
         $message = "Dear {$customerInfo['name']},\n\nThank you for using ShipOnline! Your request number is {$request_number}. The cost is {$cost}. We will pick-up the item at {$pickupTime} on {$pickupDate}.";
-        $headers = "From: ShipOnline <noreply@shiponline.com>\r\n";
+        $headers = 'From: testuser@localhost';
 
-        mail($to, $subject, $message, $headers, "-r 1234567@student.swin.edu.au");
+       
+
+
+        if (mail($to, $subject, $message, $headers, "-r 104998303@student.swin.edu.au")) {
+            return "Email sent successfully";
+        } else {
+            return "Email failed to send";
+        }
     }
 }
 
