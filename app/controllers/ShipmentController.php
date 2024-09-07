@@ -26,7 +26,7 @@ class ShipmentController
 
             if (empty($error_message)) {
                 $request_number = $this->shipmentModel->generateRequestNumber();
-                // $customerInfo = $this->shipmentModel->getCustomerInfo($userId);
+                $customerInfo = $this->shipmentModel->getCustomerInfo($userId);
                 $request_date = date('Y-m-d');
                 $cost = $this->shipmentModel->calculateCost($_POST['weight']);
 
@@ -50,7 +50,7 @@ class ShipmentController
 
                 if ($result) {
 
-                    // $this->sendConfirmationEmail($customerInfo, $request_number, $cost, $_POST['pickup_date'], $_POST['pickup_time']);
+                    $this->sendConfirmationEmail($customerInfo, $request_number, $cost, $_POST['pickup_date'], $_POST['pickup_time']);
 
                     $success_message = "Thank you! Your request number is {$request_number}. We will pick-up the item at {$_POST['pickup_time']} on {$_POST['pickup_date']}.";
                     return [
