@@ -72,6 +72,10 @@
             <input type="text" name="mobileNumber" placeholder="Contact Phone" required><br>
             <input type="submit" value="Register">
         </form>
+
+        <?php if (isset($error)): ?>
+            <p style="color: red;"><?php echo htmlspecialchars($error); ?></p>
+        <?php endif; ?>
     </div>
 
 </body>

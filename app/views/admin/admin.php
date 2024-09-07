@@ -142,39 +142,68 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Request Number</th>
-                            <th>Item Description</th>
-                            <th>Weight</th>
-                            <th>Pickup Address</th>
-                            <th>Pickup Suburb</th>
-                            <th>Pickup Date</th>
-                            <th>Pickup Time</th>
-                            <th>Receiver Name</th>
-                            <th>Delivery Address</th>
-                            <th>Delivery Suburb</th>
-                            <th>Delivery State</th>
-                            <th>Total Cost</th>
+                            <?php if ($_POST['date_type'] == 'request_date'): ?>
+                                <th>Customer Number</th>
+                                <th>Request Number</th>
+                                <th>Item Description</th>
+                                <th>Weight</th>
+                                <th>Pick-up Suburb</th>
+                                <th>Preferred Pick-up Date</th>
+                                <th>Delivery Suburb</th>
+                                <th>Delivery State</th>
+                            <?php else: ?>
+                                <th>Customer ID</th>
+                                <th>Customer Name</th>
+                                <th>Contact Phone</th>
+                                <th>Request Number</th>
+                                <th>Item Description</th>
+                                <th>Weight</th>
+                                <th>Pick-up Address</th>
+                                <th>Pick-up Suburb</th>
+                                <th>Preferred Pick-up Time</th>
+                                <th>Delivery Suburb</th>
+                                <th>Delivery State</th>
+                            <?php endif; ?>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($shipments as $shipment): ?>
                             <tr>
-                                <td><?php echo htmlspecialchars($shipment['request_number']); ?></td>
-                                <td><?php echo htmlspecialchars($shipment['item_description']); ?></td>
-                                <td><?php echo htmlspecialchars($shipment['weight']); ?></td>
-                                <td><?php echo htmlspecialchars($shipment['pickup_address']); ?></td>
-                                <td><?php echo htmlspecialchars($shipment['pickup_suburb']); ?></td>
-                                <td><?php echo htmlspecialchars($shipment['pickup_date']); ?></td>
-                                <td><?php echo htmlspecialchars($shipment['pickup_time']); ?></td>
-                                <td><?php echo htmlspecialchars($shipment['receiver_name']); ?></td>
-                                <td><?php echo htmlspecialchars($shipment['delivery_address']); ?></td>
-                                <td><?php echo htmlspecialchars($shipment['delivery_suburb']); ?></td>
-                                <td><?php echo htmlspecialchars($shipment['delivery_state']); ?></td>
-                                <td><?php echo '$' . number_format($shipment['weight'] * 3 + 20, 2); ?></td>
+                                <?php if ($_POST['date_type'] == 'request_date'): ?>
+                                    <td><?php echo htmlspecialchars($shipment['customer_id']); ?></td>
+                                    <td><?php echo htmlspecialchars($shipment['request_number']); ?></td>
+                                    <td><?php echo htmlspecialchars($shipment['item_description']); ?></td>
+                                    <td><?php echo htmlspecialchars($shipment['weight']); ?></td>
+                                    <td><?php echo htmlspecialchars($shipment['pickup_suburb']); ?></td>
+                                    <td><?php echo htmlspecialchars($shipment['pickup_date']); ?></td>
+                                    <td><?php echo htmlspecialchars($shipment['delivery_suburb']); ?></td>
+                                    <td><?php echo htmlspecialchars($shipment['delivery_state']); ?></td>
+                                <?php else: ?>
+                                    <td><?php echo htmlspecialchars($shipment['customer_id']); ?></td>
+                                    <td><?php echo htmlspecialchars($shipment['name']); ?></td>
+                                    <td><?php echo htmlspecialchars($shipment['mobileNumber']); ?></td>
+                                    <td><?php echo htmlspecialchars($shipment['request_number']); ?></td>
+                                    <td><?php echo htmlspecialchars($shipment['item_description']); ?></td>
+                                    <td><?php echo htmlspecialchars($shipment['weight']); ?></td>
+                                    <td><?php echo htmlspecialchars($shipment['pickup_address']); ?></td>
+                                    <td><?php echo htmlspecialchars($shipment['pickup_suburb']); ?></td>
+                                    <td><?php echo htmlspecialchars($shipment['pickup_time']); ?></td>
+                                    <td><?php echo htmlspecialchars($shipment['delivery_suburb']); ?></td>
+                                    <td><?php echo htmlspecialchars($shipment['delivery_state']); ?></td>
+                                <?php endif; ?>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+            </div>
+            <div class="summary">
+                <?php if ($_POST['date_type'] == 'request_date'): ?>
+                    <p>Total number of requests: <?php echo count($shipments); ?></p>
+                    <p>Total revenue: $<?php echo number_format(array_sum(array_column($shipments, 'total_cost')), 2); ?></p>
+                <?php else: ?>
+                    <p>Total number of requests: <?php echo count($shipments); ?></p>
+                    <p>Total weight: <?php echo array_sum(array_column($shipments, 'weight')); ?> kg</p>
+                <?php endif; ?>
             </div>
         <?php endif; ?>
     </div>

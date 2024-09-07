@@ -19,18 +19,19 @@ class ShipmentController
         }
     }
 
-    public function createShipmentRequest($customer_id, $item_description, $weight, $pickup_address, $pickup_suburb, $pickup_date, $pickup_time, $receiver_name, $delivery_address, $delivery_suburb, $delivery_state)
+    public function createShipmentRequest($userId, $itemDescription, $weight, $pickupAddress, $pickupSuburb, $pickupDate, $pickupTime, $receiverName, $deliveryAddress, $deliverySuburb, $deliveryState)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $error_message = $this->shipmentModel->validateInput($_POST);
+
 
             if (empty($error_message)) {
                 $request_number = $this->shipmentModel->generateRequestNumber();
-                $request_date = date('Y-m-d H:i:s');
+                // $customerInfo = $this->shipmentModel->getCustomerInfo($userId);
+                $request_date = date('Y-m-d');
                 $cost = $this->shipmentModel->calculateCost($_POST['weight']);
 
                 $shipmentData = [
-                    'customer_id' => $customer_id,
+                    'customer_id' => $userId,
                     'request_number' => $request_number,
                     'request_date' => $request_date,
                     'item_description' => $_POST['item_description'],
@@ -42,15 +43,16 @@ class ShipmentController
                     'receiver_name' => $_POST['receiver_name'],
                     'delivery_address' => $_POST['delivery_address'],
                     'delivery_suburb' => $_POST['delivery_suburb'],
-                    'delivery_state' => $_POST['delivery_state']
+                    'delivery_state' => $_POST['delivery_state'],
                 ];
 
-                if ($this->shipmentModel->createShipment($shipmentData)) {
-                    // $customerInfo = $this->shipmentModel->getCustomerInfo($customer_id);
+                $result = $this->shipmentModel->createShipment($shipmentData);
+
+                if ($result) {
+
                     // $this->sendConfirmationEmail($customerInfo, $request_number, $cost, $_POST['pickup_date'], $_POST['pickup_time']);
 
                     $success_message = "Thank you! Your request number is {$request_number}. We will pick-up the item at {$_POST['pickup_time']} on {$_POST['pickup_date']}.";
-                    // Return true if the shipment was created successfully, false otherwise
                     return [
                         'success' => true,
                         'message' => $success_message
@@ -68,5 +70,14 @@ class ShipmentController
         include 'app/views/shipment/create.php';
     }
 
-    // ... rest of the controller code ...
+    private function sendConfirmationEmail($customerInfo, $request_number, $cost, $pickupDate, $pickupTime)
+    {
+        $to = $customerInfo['email'];
+        $subject = "Shipping request with ShipOnline";
+        $message = "Dear {$customerInfo['name']},\n\nThank you for using ShipOnline! Your request number is {$request_number}. The cost is {$cost}. We will pick-up the item at {$pickupTime} on {$pickupDate}.";
+        $headers = "From: ShipOnline <noreply@shiponline.com>\r\n";
+
+        mail($to, $subject, $message, $headers, "-r 1234567@student.swin.edu.au");
+    }
 }
+

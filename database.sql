@@ -17,7 +17,7 @@ CREATE TABLE shipments (
     id INT AUTO_INCREMENT PRIMARY KEY,
     customer_id INT NOT NULL,
     request_number VARCHAR(20) NOT NULL UNIQUE,
-    request_date DATETIME NOT NULL,
+    request_date DATE NOT NULL,
     item_description TEXT NOT NULL,
     weight INT NOT NULL,
     pickup_address VARCHAR(255) NOT NULL,
@@ -28,6 +28,7 @@ CREATE TABLE shipments (
     delivery_address VARCHAR(255) NOT NULL,
     delivery_suburb VARCHAR(100) NOT NULL,
     delivery_state VARCHAR(50) NOT NULL,
+    total_cost DECIMAL(10, 2) NOT NULL
     
 );
 

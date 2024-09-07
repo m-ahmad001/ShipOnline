@@ -12,7 +12,12 @@ class UserController
 
     public function register($name, $email, $password, $mobileNumber)
     {
-        return $this->userModel->register($name, $email, $password, $mobileNumber);
+
+        try {
+            return $this->userModel->register($name, $email, $password, $mobileNumber);
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
     }
 
     public function login($mobileNumber, $password)

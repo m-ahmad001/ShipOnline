@@ -15,8 +15,13 @@ class User
     {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
         $stmt = $this->conn->prepare("INSERT INTO users (name, email, password, mobileNumber) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("sssi", $name, $email, $hashed_password, $mobileNumber);
-        return $stmt->execute();
+        $stmt->bind_param("ssss", $name, $email, $hashed_password, $mobileNumber);
+
+        try {
+            return $stmt->execute();
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
     }
 
     public function login($mobileNumber, $password)
